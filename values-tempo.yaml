@@ -1,0 +1,38 @@
+# -- Overrides the chart's computed fullname
+fullnameOverride: "tempo"
+
+# To configure a different storage backend instead of local storage:
+storage:
+  trace:
+    # -- The supported storage backends are gcs, s3 and azure, as specified in https://grafana.com/docs/tempo/latest/configuration/#storage
+    backend: s3
+    wal:
+      path: /tmp/tempo/wal
+    s3:
+      bucket: tempo-traces
+      endpoint: tempo-minio:9000
+      access_key: grafana-tempo
+      secret_key: supersecret
+      insecure: true
+      tls_insecure_skip_verify: true
+
+traces:
+  otlp:
+    http:
+      # -- Enable Tempo to ingest Open Telemetry HTTP traces
+      enabled: true
+    grpc:
+      # -- Enable Tempo to ingest Open Telemetry GRPC traces
+      enabled: true
+
+# Minio
+minio:
+  enabled: true
+  mode: standalone
+  rootUser: grafana-tempo
+  rootPassword: supersecret
+  buckets:
+    # Default Tempo storage bucket.
+    - name: tempo-traces
+      policy: none
+      purge: false

@@ -1,0 +1,28 @@
+# Configure the deployment
+deployment:
+  # -- Additional volumes available for use with initContainers and additionalContainers
+  additionalVolumes:
+  - name: tz-config
+    hostPath:
+      path: /usr/share/zoneinfo/Europe/Zurich
+      type: File
+
+## Tracing
+# -- https://doc.traefik.io/traefik/observability/tracing/overview/
+tracing:  # @schema additionalProperties: false
+  # -- Enables tracing for internal resources. Default: false.
+  addInternals: true
+  otlp:
+    # -- See https://doc.traefik.io/traefik/v3.0/observability/tracing/opentelemetry/
+    enabled: true
+    http:
+      # -- Set to true in order to send metrics to the OpenTelemetry Collector using HTTP.
+      enabled: true
+      # -- Format: <scheme>://<host>:<port><path>. Default: http://localhost:4318/v1/metrics
+      endpoint: "http://alloy.observability:4318/v1/traces"
+
+service:
+  enabled: true
+  ## -- Single service is using `MixedProtocolLBService` feature gate.
+  ## -- When set to false, it will create two Service, one for TCP and one for UDP.
+  type: NodePort
